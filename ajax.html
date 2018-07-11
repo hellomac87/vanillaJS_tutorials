@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ajax</title>
+
+    <style>
+        #load{
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            color:#ffffff;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <input type="button" id="btn"/ value="call api">
+    <div id="load">loading</div>
+    <div id="root"></div>
+</body>
+</html>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous">
+</script>
+
+<script>
+const $rootElem = $('#root');
+const $btn = $('#btn');
+$btn.on('click', callApi);
+
+function callApi(){
+    //console.log('call API');
+
+    $.ajax({
+        url:'https://yts.am/api/v2/list_movies.json?sort_by=download_count&limit=50',
+        beforeSend:function(){
+            console.log('before');
+            $('#load').css('display','flex');
+        },
+        complete:function(){
+            console.log('complete');
+            $('#load').hide();
+        }
+    })
+    .done((result) =>{
+        // console.log(result.data.movies);
+        let movies = result.data.movies;
+        
+        movies.map(function(movie){
+            // console.log(movie);
+
+            let listItem = document.createElement('div');
+
+            listItem.innerHTML += '<div>' +'<img src="'+ movie.medium_cover_image + '"/>'+ '</div>';
+            listItem.innerHTML += '<div>' + movie.title + '</div>';
+            listItem.innerHTML += '<div class="ratings">' + movie.rating + '</div>';
+
+            $rootElem.append(listItem);
+        });
+    })
+    .fail(err =>
+        console.log(err)
+    );
+}
+
+
+
+
+</script>
