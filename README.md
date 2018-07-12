@@ -39,23 +39,6 @@
 - 근데 문제가 생겼음, 불러올때 로딩바같은거 progress 라고 하나 그걸 띄워보고 싶은데 fetch api는 그걸 제공해주지 않는다고함
 - 그래서 jquery ajax랑 xmlhttprequest를 써보기로 함
 
-### 시작
-- 필요한 변수들 지정
-- callApi() 버튼클릭시 실행될 함수 만들기
-- 변수이름 지을때 너무 고민된다.
-```javascript
-const rootElem = document.getElementById('root');
-const btn = document.getElementById('btn');
-btn.addEventListener('click', callApi);
-
-function callApi(){
-    console.log('call api');
-}
-```
-
-- fetch api 사용법 검색하기, 검색키워드 : fetch api
-- https://developer.mozilla.org/ko/docs/Web/API/Fetch_API/Fetch%EC%9D%98_%EC%82%AC%EC%9A%A9%EB%B2%95
-- 읽어도 잘 모르겠음,여튼 url로 찔러서 then then then catch로 사용하는것같다
 
 ```javascript
 const rootElem = document.getElementById('root');
@@ -178,6 +161,21 @@ function callApi(){
     req.send(null);
 }
 ```
+
+## ajax 참고링크
+### fetch api
+- https://blog.perfectacle.com/2017/01/25/es6-ajax-with-fetch/
+- https://medium.com/@kkak10/javascript-fetch-api-e26bfeaad9b6
+- https://www.zerocho.com/category/HTML/post/595b4bc97cafe885540c0c1c
+- https://developer.mozilla.org/ko/docs/Web/API/Fetch_API/Fetch%EC%9D%98_%EC%82%AC%EC%9A%A9%EB%B2%95
+
+### $.ajax api
+- http://api.jquery.com/jquery.ajax/
+-
+
+### XmlHttpRequest api
+-
+-
 
 
 
