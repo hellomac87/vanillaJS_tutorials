@@ -2,11 +2,12 @@
 
 # AJAX (Asynchronous JavaScript and XML)
 - ajax 통신하기 예제
-- XMLHttpRequest, JQuery ajax, fetch api를 사용하여 https://yts.am 에서 제공하는 api 데이터를 출력해본다.
+- ajax가 대충 뭔지는 알겠는데 실제로 어떻게 써야하는지 막막해서 내가그냥 해보는 예제
+- XMLHttpRequest, JQuery ajax, fetch api를 사용하여 https://yts.am (뭔 영화 토렌트 사이트라고함)에서 제공하는 api 데이터를 출력해본다.
 - 사용할 api url(https://yts.am/api/v2/list_movies.json?sort_by=download_count&limit=50)
 
 
-# basic source
+# Basic html source
 
 ```html
 <!DOCTYPE html>
@@ -29,30 +30,51 @@
 ```
 - call api 버튼 누르면 root 엘리먼트에 출력되도록
 - 불러오는 도중에 progress 화면 생성, 완료시 사라지게
+- 버튼을 누른다 => 로딩바가 뜬다 => 영화목록이 출력된다.(로딩바사라짐) => 쨔잔
 
-# XMLHttpRequest  
+
+# fetch api
+- 처음엔 그냥 fetch api한번 사용해보려고 했음
+- 예전에 리액트 튜토리얼 보면서 따라할때 간단하게 fetch를 쓰면 불러올수 있어서 그냥 되나 안되나 해봄 
+- 근데 문제가 생겼음, 불러올때 로딩바같은거 progress 라고 하나 그걸 띄워보고 싶은데 fetch api는 그걸 제공해주지 않는다고함
+- 그래서 jquery ajax랑 xmlhttprequest를 써보기로 함
+
+### 시작
+- 필요한 변수들 지정
+- callApi() 버튼클릭시 실행될 함수 만들기
+- 변수이름 지을때 너무 고민된다.
 ```javascript
 const rootElem = document.getElementById('root');
 const btn = document.getElementById('btn');
 btn.addEventListener('click', callApi);
 
 function callApi(){
-    // console.log('call API');
+    console.log('call api');
+}
+```
 
-    var req = new XMLHttpRequest();
-    req.open('GET', 'https://yts.am/api/v2/list_movies.json?sort_by=download_count&limit=50', true);
-    req.onprogress = function(){
-        console.log('on progress');
-        document.getElementById('load').style.display = 'flex';
-    }
-    req.onload = function(){
-        let res = JSON.parse(this.responseText);
+- fetch api 사용법 검색하기, 검색키워드 : fetch api
+- https://developer.mozilla.org/ko/docs/Web/API/Fetch_API/Fetch%EC%9D%98_%EC%82%AC%EC%9A%A9%EB%B2%95
+- 읽어도 잘 모르겠음,여튼 url로 찔러서 then then then catch로 사용하는것같다
 
-        // console.log(res.data.movies);
+```javascript
+const rootElem = document.getElementById('root');
+const btn = document.getElementById('btn');
+btn.addEventListener('click', callApi);
 
-        let movies = res.data.movies;
+function callApi(){
+    //console.log('call API');
 
+    fetch('https://yts.am/api/v2/list_movies.json?sort_by=download_count&limit=50')
+    .then((response) =>{
+        return response.json();
+    })
+    .then((result) => {
+        // console.log(result.data.movies);
+        let movies = result.data.movies;
+        
         movies.map(function(movie){
+            // console.log(movie);
 
             let listItem = document.createElement('div');
 
@@ -62,14 +84,18 @@ function callApi(){
 
             rootElem.appendChild(listItem);
         });
-
-        document.getElementById('load').style.display = 'none';
-    }
-    req.send(null);
+    })
+    .catch(err =>
+        console.log(err)
+    );
 }
 ```
 
+
 # JQUERY AJAX
+- 제일 접근하기 쉬운 제이쿼리로 해봄
+- 여기서는 beforeSend, complete 메소드를 제공해줘서 그냥 때려박으면 댐
+
 ```javascript
 const $rootElem = $('#root');
 const $btn = $('#btn');
@@ -111,25 +137,32 @@ function callApi(){
 }
 ```
 
-# fetch api
+
+
+# XMLHttpRequest  
+
 ```javascript
 const rootElem = document.getElementById('root');
 const btn = document.getElementById('btn');
 btn.addEventListener('click', callApi);
 
 function callApi(){
-    //console.log('call API');
+    // console.log('call API');
 
-    fetch('https://yts.am/api/v2/list_movies.json?sort_by=download_count&limit=50')
-    .then((response) =>{
-        return response.json();
-    })
-    .then((result) => {
-        // console.log(result.data.movies);
-        let movies = result.data.movies;
-        
+    var req = new XMLHttpRequest();
+    req.open('GET', 'https://yts.am/api/v2/list_movies.json?sort_by=download_count&limit=50', true);
+    req.onprogress = function(){
+        console.log('on progress');
+        document.getElementById('load').style.display = 'flex';
+    }
+    req.onload = function(){
+        let res = JSON.parse(this.responseText);
+
+        // console.log(res.data.movies);
+
+        let movies = res.data.movies;
+
         movies.map(function(movie){
-            // console.log(movie);
 
             let listItem = document.createElement('div');
 
@@ -139,9 +172,12 @@ function callApi(){
 
             rootElem.appendChild(listItem);
         });
-    })
-    .catch(err =>
-        console.log(err)
-    );
+
+        document.getElementById('load').style.display = 'none';
+    }
+    req.send(null);
 }
 ```
+
+
+
